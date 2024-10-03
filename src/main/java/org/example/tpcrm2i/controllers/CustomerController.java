@@ -4,6 +4,8 @@ import org.example.tpcrm2i.entities.Customer;
 import org.example.tpcrm2i.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,10 +30,10 @@ public class CustomerController {
         return this.customerRepository.findById(id);
     }
 
-    // TODO: WIP (return 201 statusCode)
     @PostMapping
-    public void addCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
         this.customerRepository.save(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
@@ -39,9 +41,8 @@ public class CustomerController {
         this.customerRepository.deleteById(id);
     }
 
-    // TODO: WIP (return newResponse JSON)
     @PutMapping("/{id}")
-    public void updateCustomerById(@PathVariable Long id, @RequestBody Customer customer) {
+    public Customer updateCustomerById(@PathVariable Long id, @RequestBody Customer customer) {
         Optional<Customer> customerPut = this.customerRepository.findById(id);
         customerPut.get().setCompany_name(customer.getCompany_name() != null ? customer.getCompany_name() : customerPut.get().getCompany_name());;
         customerPut.get().setFirst_name(customer.getFirst_name() != null ? customer.getFirst_name() : customerPut.get().getFirst_name());
@@ -53,7 +54,7 @@ public class CustomerController {
         customerPut.get().setCountry(customer.getCountry() != null ? customer.getCountry() : customerPut.get().getCountry());
         customerPut.get().setCity(customer.getCity() != null ? customer.getCity() : customerPut.get().getCity());
         customerPut.get().setState(customer.getState() != NULL ? customer.getState() : customerPut.get().getState());
-        this.customerRepository.save(customerPut.get());
+        return this.customerRepository.save(customerPut.get());
     }
 
 }
